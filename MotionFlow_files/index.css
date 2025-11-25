@@ -1,0 +1,430 @@
+.teaser-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* ---------- TEASER CAROUSEL (NEW HORIZONTAL STRIP) ---------- */
+
+.teaser-title {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 24px;
+}
+
+/* Outer wrapper positions the arrows */
+.teaser-carousel-wrapper {
+  position: relative;
+  margin-top: 10px;
+}
+
+/* Horizontal scroll area */
+.teaser-carousel {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 8px 56px 16px; /* extra side padding so cards don’t hide under arrows */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar (optional) */
+.teaser-carousel::-webkit-scrollbar {
+  display: none;
+}
+.teaser-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Each card in the carousel */
+.teaser-card {
+  flex: 0 0 320px;          /* width of each “column”; tweak as you like */
+  scroll-snap-align: start;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.teaser-card h3 {
+  margin: 0 0 6px;
+}
+
+.teaser-card .prompt-text {
+  font-family: "Courier New", monospace;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.teaser-card video {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* Arrow buttons */
+.teaser-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  border-radius: 999px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255,255,255,0.9);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  z-index: 2;
+}
+
+.teaser-nav-prev { left: 8px; }
+.teaser-nav-next { right: 8px; }
+
+/* Responsive: smaller cards and no arrows on tiny screens */
+@media (max-width: 700px) {
+  .teaser-card {
+    flex: 0 0 260px;
+  }
+  .teaser-nav {
+    display: none;
+  }
+}
+
+/* Generic grid for main & appendix qualitatives */
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 1rem;
+}
+
+/* Ablation grid (3 columns usually looks nice) */
+.grid-ablation {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 1rem;
+}
+
+/* Each logical column (one prompt with all methods) */
+.grid-4 .column,
+.grid-ablation .column {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 12px 12px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+/* Individual method blocks inside a column */
+.media-container {
+  margin-bottom: 12px;
+}
+
+.media-container:last-child {
+  margin-bottom: 0;
+}
+
+.media-container h3 {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+
+/* Prompt “card” style */
+.prompt-text {
+  font-family: "Courier New", monospace;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 10px;
+  margin: 0 0 8px;
+}
+
+/* Video styling */
+.media-container video {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 8px;
+}
+
+/* Titles spacing in that section */
+/* Only affect titles INSIDE the teaser carousel section */
+.teaser-carousel-wrapper .title,
+.teaser-section .title {
+  text-align: left;
+  margin-top: 1rem;
+}
+
+
+/* --- Large figure for quantitative results --- */
+.large-figure {
+  width: 100%;
+  max-width: 1400px;     /* increase as needed */
+  margin: 0 auto;
+}
+
+.large-figure img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+  image-rendering: auto;
+  max-width: 1400px;     /* ensures it can grow larger */
+}
+
+
+/* Responsive behaviour */
+@media (max-width: 1200px) {
+  .grid-4 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .grid-ablation {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-4,
+  .grid-ablation {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+/* ---------- OLD GRID VERSION (SAFE, DOESN’T OVERRIDE CAROUSEL) ---------- */
+
+.section-light-gray-1 {
+  background-color: #eaeaea;
+}
+
+/* Only affects cards inside .teaser-grid, not the carousel */
+.teaser-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.teaser-grid .teaser-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.teaser-grid .teaser-card h3 {
+  margin: 0 0 6px;
+}
+
+.teaser-grid .teaser-card .prompt-text {
+  font-family: "Courier New", monospace;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.teaser-grid .teaser-card video {
+  width: 100%;
+  border-radius: 8px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+/* Responsive for teaser-grid only */
+@media (max-width: 1200px) {
+  .teaser-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .teaser-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- REST OF YOUR ORIGINAL CSS (UNCHANGED) ---------- */
+
+.section-light-gray-2 {
+  background-color: #fafafa;
+}
+
+#teaser-video {
+  max-width: 75%;
+  height: auto;
+  padding: 20px;
+}
+
+.title {
+  padding: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+body {
+  font-family: 'Noto Sans', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.results-section {
+  padding: 20px;
+}
+
+section {
+  padding: 10px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.video-item {
+  text-align: center;
+}
+
+.video-item video {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.video-item .label {
+  font-size: 0.9rem;
+  margin-top: 10px;
+  color: #777;
+}
+
+.video-item .description {
+  margin-top: 5px;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: #555;
+}
+
+footer {
+  background-color: #333;
+  color: #000;
+  padding: 20px 0;
+  text-align: center;
+}
+
+footer a {
+  color: #4a90e2;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.comparison-set {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  margin: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.comparison-title {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+.comparison-set .video-item {
+  flex: 1 1 30%;
+  margin: 0.5rem;
+  text-align: center;
+}
+
+.comparison-set .video-item video {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.comparison-set .description {
+  margin-top: 0.5rem;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+img[src$=".png"] {
+  max-width: 100%;
+  width: auto;
+  height: auto;
+}
+/* Limit the framework figure to the container width */
+.framework-figure {
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Force the image to shrink but not exceed container */
+.framework-img {
+  display: block;
+  max-width: 100%;   /* Never exceed container */
+  width: 100%;       /* Scale down smoothly */
+  height: auto;
+  object-fit: contain;
+  padding: 0 10px;   /* optional interior margin */
+}
+
+/* Extra: cap the max figure width for huge screens */
+.container.is-max-desktop .framework-img {
+  max-width: 700px;  /* adjust to taste */
+  margin: 0 auto;
+}
+/* .framework-img {
+  max-width: 50%;
+} */

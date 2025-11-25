@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<!-- saved from url=(0039)https://motionflow-diffusion.github.io/ -->
+<html class="fontawesome-i2svg-active fontawesome-i2svg-complete"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <!-- Meta tags for social media banners, these should be filled in appropriatly as they are your "business card" -->
+  <!-- Replace the content tag with appropriate information -->
+  <meta name="description" content="Diverse Video Generation with Determinantal Point Process-Guided Policy Optimization">
+  <meta property="og:title" content="Diverse Video Generation with Determinantal Point Process-Guided Policy Optimization">
+  <meta property="og:description" content="DPP-GRPO is a training framework for generating high-quality diverse videos">
+  <meta property="og:url" content="https://dpp-grpo.github.io">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimensions are 1200X630-->
+  <meta property="og:image" content="static/images/framework.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:title" content="Diverse Video Generation with Determinantal Point Process-Guided Policy Optimization">
+  <meta name="twitter:description" content="DPP-GRPO is a training framework for generating high-quality diverse videos">
+  <!-- Path to banner image, should be in the path listed below. Optimal dimensions are 1200X600 -->
+  <meta name="twitter:image" content="static/images/framework.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <!-- Keywords for your paper to be indexed by -->
+  <meta name="keywords" content="GRPO, video diffusion models, diversity, diverse video generation, DPP, generative AI">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>DPP-GRPO</title>
+  <style type="text/css">svg:not(:root).svg-inline--fa{overflow:visible}.svg-inline--fa{display:inline-block;font-size:inherit;height:1em;overflow:visible;vertical-align:-.125em}.svg-inline--fa.fa-lg{vertical-align:-.225em}.svg-inline--fa.fa-w-1{width:.0625em}.svg-inline--fa.fa-w-2{width:.125em}.svg-inline--fa.fa-w-3{width:.1875em}.svg-inline--fa.fa-w-4{width:.25em}.svg-inline--fa.fa-w-5{width:.3125em}.svg-inline--fa.fa-w-6{width:.375em}.svg-inline--fa.fa-w-7{width:.4375em}.svg-inline--fa.fa-w-8{width:.5em}.svg-inline--fa.fa-w-9{width:.5625em}.svg-inline--fa.fa-w-10{width:.625em}.svg-inline--fa.fa-w-11{width:.6875em}.svg-inline--fa.fa-w-12{width:.75em}.svg-inline--fa.fa-w-13{width:.8125em}.svg-inline--fa.fa-w-14{width:.875em}.svg-inline--fa.fa-w-15{width:.9375em}.svg-inline--fa.fa-w-16{width:1em}.svg-inline--fa.fa-w-17{width:1.0625em}.svg-inline--fa.fa-w-18{width:1.125em}.svg-inline--fa.fa-w-19{width:1.1875em}.svg-inline--fa.fa-w-20{width:1.25em}.svg-inline--fa.fa-pull-left{margin-right:.3em;width:auto}.svg-inline--fa.fa-pull-right{margin-left:.3em;width:auto}.svg-inline--fa.fa-border{height:1.5em}.svg-inline--fa.fa-li{width:2em}.svg-inline--fa.fa-fw{width:1.25em}.fa-layers svg.svg-inline--fa{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.fa-layers{display:inline-block;height:1em;position:relative;text-align:center;vertical-align:-.125em;width:1em}.fa-layers svg.svg-inline--fa{-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter,.fa-layers-text{display:inline-block;position:absolute;text-align:center}.fa-layers-text{left:50%;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);-webkit-transform-origin:center center;transform-origin:center center}.fa-layers-counter{background-color:#ff253a;border-radius:1em;-webkit-box-sizing:border-box;box-sizing:border-box;color:#fff;height:1.5em;line-height:1;max-width:5em;min-width:1.5em;overflow:hidden;padding:.25em;right:0;text-overflow:ellipsis;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-bottom-right{bottom:0;right:0;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom right;transform-origin:bottom right}.fa-layers-bottom-left{bottom:0;left:0;right:auto;top:auto;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:bottom left;transform-origin:bottom left}.fa-layers-top-right{right:0;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top right;transform-origin:top right}.fa-layers-top-left{left:0;right:auto;top:0;-webkit-transform:scale(.25);transform:scale(.25);-webkit-transform-origin:top left;transform-origin:top left}.fa-lg{font-size:1.3333333333em;line-height:.75em;vertical-align:-.0667em}.fa-xs{font-size:.75em}.fa-sm{font-size:.875em}.fa-1x{font-size:1em}.fa-2x{font-size:2em}.fa-3x{font-size:3em}.fa-4x{font-size:4em}.fa-5x{font-size:5em}.fa-6x{font-size:6em}.fa-7x{font-size:7em}.fa-8x{font-size:8em}.fa-9x{font-size:9em}.fa-10x{font-size:10em}.fa-fw{text-align:center;width:1.25em}.fa-ul{list-style-type:none;margin-left:2.5em;padding-left:0}.fa-ul>li{position:relative}.fa-li{left:-2em;position:absolute;text-align:center;width:2em;line-height:inherit}.fa-border{border:solid .08em #eee;border-radius:.1em;padding:.2em .25em .15em}.fa-pull-left{float:left}.fa-pull-right{float:right}.fa.fa-pull-left,.fab.fa-pull-left,.fal.fa-pull-left,.far.fa-pull-left,.fas.fa-pull-left{margin-right:.3em}.fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}.fa-spin{-webkit-animation:fa-spin 2s infinite linear;animation:fa-spin 2s infinite linear}.fa-pulse{-webkit-animation:fa-spin 1s infinite steps(8);animation:fa-spin 1s infinite steps(8)}@-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}@keyframes fa-spin{0%{-webkit-transform:rotate(0);transform:rotate(0)}100%{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}.fa-rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.fa-rotate-180{-webkit-transform:rotate(180deg);transform:rotate(180deg)}.fa-rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.fa-flip-horizontal{-webkit-transform:scale(-1,1);transform:scale(-1,1)}.fa-flip-vertical{-webkit-transform:scale(1,-1);transform:scale(1,-1)}.fa-flip-both,.fa-flip-horizontal.fa-flip-vertical{-webkit-transform:scale(-1,-1);transform:scale(-1,-1)}:root .fa-flip-both,:root .fa-flip-horizontal,:root .fa-flip-vertical,:root .fa-rotate-180,:root .fa-rotate-270,:root .fa-rotate-90{-webkit-filter:none;filter:none}.fa-stack{display:inline-block;height:2em;position:relative;width:2.5em}.fa-stack-1x,.fa-stack-2x{bottom:0;left:0;margin:auto;position:absolute;right:0;top:0}.svg-inline--fa.fa-stack-1x{height:1em;width:1.25em}.svg-inline--fa.fa-stack-2x{height:2em;width:2.5em}.fa-inverse{color:#fff}.sr-only{border:0;clip:rect(0,0,0,0);height:1px;margin:-1px;overflow:hidden;padding:0;position:absolute;width:1px}.sr-only-focusable:active,.sr-only-focusable:focus{clip:auto;height:auto;margin:0;overflow:visible;position:static;width:auto}.svg-inline--fa .fa-primary{fill:var(--fa-primary-color,currentColor);opacity:1;opacity:var(--fa-primary-opacity,1)}.svg-inline--fa .fa-secondary{fill:var(--fa-secondary-color,currentColor);opacity:.4;opacity:var(--fa-secondary-opacity,.4)}.svg-inline--fa.fa-swap-opacity .fa-primary{opacity:.4;opacity:var(--fa-secondary-opacity,.4)}.svg-inline--fa.fa-swap-opacity .fa-secondary{opacity:1;opacity:var(--fa-primary-opacity,1)}.svg-inline--fa mask .fa-primary,.svg-inline--fa mask .fa-secondary{fill:#000}.fad.fa-inverse{color:#fff}</style><link rel="icon" type="image/x-icon" href="https://motionflow-diffusion.github.io/static/images/favicon.ico">
+  <link href="./MotionFlow_files/css" rel="stylesheet">
+
+  <link rel="stylesheet" href="./MotionFlow_files/bulma.min.css">
+  <link rel="stylesheet" href="./MotionFlow_files/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./MotionFlow_files/bulma-slider.min.css">
+  <link rel="stylesheet" href="./MotionFlow_files/fontawesome.all.min.css">
+  <link rel="stylesheet" href="./MotionFlow_files/academicons.min.css">
+  <link rel="stylesheet" href="./MotionFlow_files/index.css">
+
+  <script type="text/javascript" src="./MotionFlow_files/pv" async=""></script><script src="./MotionFlow_files/jquery.min.js"></script>
+  <script src="./MotionFlow_files/main.js"></script><script src="./MotionFlow_files/ViewSDKInterface.js"></script>
+  <script defer="" src="./MotionFlow_files/fontawesome.all.min.js"></script>
+  <script src="./MotionFlow_files/bulma-carousel.min.js"></script>
+  <script src="./MotionFlow_files/bulma-slider.min.js"></script>
+  <script src="./MotionFlow_files/index.js"></script>
+<style type="text/css">.ViewSDK_hideOverflow {
+        overflow: hidden;
+    }</style><style type="text/css">.ViewSDK_parentRelativeWidth {
+        width: 100%;
+    }</style><style type="text/css">.ViewSDK_viewportRelativeWidth {
+        width: 100vw;
+    }</style><style type="text/css">.ViewSDK_parentRelativeHeight {
+        height: 100%;
+    }</style><style type="text/css">.ViewSDK_viewportRelativeHeight {
+        height: 100vh;
+    }</style><style type="text/css">.ViewSDK_fullScreenPDFViewer {
+        width:100vw !important; height:100vh !important;
+        max-width:100vw !important; max-height:100vh !important;
+        position:fixed; top:0; left:0; z-index:99999;
+        margin: 0 !important; padding: 0 !important;
+        border: none !important;
+    }</style><style type="text/css">:root { --ViewSDK-mobile-viewport-height:1vh; }</style><style type="text/css">.ViewSDK_fullScreenPDFViewerMobile {
+        width:100vw !important; height:calc(100 * var(--ViewSDK-mobile-viewport-height)) !important;
+        max-width:100vw !important; max-height:calc(100 * var(--ViewSDK-mobile-viewport-height)) !important;
+        position:fixed; top:0; left:0; z-index:99999;
+        margin: 0 !important; padding: 0 !important;
+        border: none !important;
+    }</style><style type="text/css">.ViewSDK_hideOverflow {
+        overflow: hidden;
+    }</style><style type="text/css">.ViewSDK_parentRelativeWidth {
+        width: 100%;
+    }</style><style type="text/css">.ViewSDK_viewportRelativeWidth {
+        width: 100vw;
+    }</style><style type="text/css">.ViewSDK_parentRelativeHeight {
+        height: 100%;
+    }</style><style type="text/css">.ViewSDK_viewportRelativeHeight {
+        height: 100vh;
+    }</style><style type="text/css">.ViewSDK_fullScreenPDFViewer {
+        width:100vw !important; height:100vh !important;
+        max-width:100vw !important; max-height:100vh !important;
+        position:fixed; top:0; left:0; z-index:9999;
+        margin: 0 !important; padding: 0 !important;
+        border: none !important;
+    }</style><style type="text/css">.ViewSDK_LBFullScreenPDFViewer {
+        width:100vw !important; height:100vh !important;
+        max-width:100vw !important; max-height:100vh !important;
+        position:fixed; top:0; left:0; z-index:10000;
+        margin: 0 !important; padding: 0 !important;
+        background-color: rgba(0, 0, 0, 0.2);
+        border: none !important;
+    }</style><style type="text/css">:root { --ViewSDK-mobile-viewport-height:1vh; }</style><style type="text/css">.ViewSDK_fullScreenPDFViewerMobile {
+        width:100vw !important; height:calc(100 * var(--ViewSDK-mobile-viewport-height)) !important;
+        max-width:100vw !important; max-height:calc(100 * var(--ViewSDK-mobile-viewport-height)) !important;
+        position:fixed; top:0; left:0; z-index:9999;
+        margin: 0 !important; padding: 0 !important;
+        border: none !important;
+    }</style><style type="text/css">.ViewSDK_LBLoader {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 10000;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #1473E6;
+        width: 56px !important;
+        height: 56px !important;
+        margin: -32px 0 0 -32px;
+        border-radius: 50%;
+        -webkit-animation: lbSpin 2s linear infinite;
+        animation: lbSpin 2s linear infinite;
+    }
+    @-webkit-keyframes lbSpin {
+        0% { -webkit-transform: rotate(0deg); }
+        100% { -webkit-transform: rotate(360deg); }
+    }
+    @keyframes lbSpin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }</style></head>
+
+<body>
+  <section class="section-light-gray-2">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Diverse Video Generation with Determinantal Point Process-Guided Policy Optimization</h1>
+          <div class="is-size-5 publication-authors">
+            <!-- Paper authors -->
+            <span class="author-block">
+              <a href="https://www.linkedin.com/in/tahira-kazimi-b35811134/" target="_blank">Tahira Kazimi</a>,</span>
+            <span class="author-block">
+              <a href="https://sanghani.cs.vt.edu/person/connor-dunlop/" target="_blank">Connor Dunlop</a>,</span>
+            <span class="author-block">
+              <a href="https://pinguar.org/" target="_blank">Pinar Yanardag</a>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">Virginia Tech</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- Arxiv PDF link -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2412.05275.pdf" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <svg class="svg-inline--fa fa-file-pdf fa-w-12" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="file-pdf" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" data-fa-i2svg=""><path fill="currentColor" d="M181.9 256.1c-5-16-4.9-46.9-2-46.9 8.4 0 7.6 36.9 2 46.9zm-1.7 47.2c-7.7 20.2-17.3 43.3-28.4 62.7 18.3-7 39-17.2 62.9-21.9-12.7-9.6-24.9-23.4-34.5-40.8zM86.1 428.1c0 .8 13.2-5.4 34.9-40.2-6.7 6.3-29.1 24.5-34.9 40.2zM248 160h136v328c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V24C0 10.7 10.7 0 24 0h200v136c0 13.2 10.8 24 24 24zm-8 171.8c-20-12.2-33.3-29-42.7-53.8 4.5-18.5 11.6-46.6 6.2-64.2-4.7-29.4-42.4-26.5-47.8-6.8-5 18.3-.4 44.1 8.1 77-11.6 27.6-28.7 64.6-40.8 85.8-.1 0-.1.1-.2.1-27.1 13.9-73.6 44.5-54.5 68 5.6 6.9 16 10 21.5 10 17.9 0 35.7-18 61.1-61.8 25.8-8.5 54.1-19.1 79-23.2 21.7 11.8 47.1 19.5 64 19.5 29.2 0 31.2-32 19.7-43.4-13.9-13.6-54.3-9.7-73.6-7.2zM377 105L279 7c-4.5-4.5-10.6-7-17-7h-6v128h128v-6.1c0-6.3-2.5-12.4-7-16.9zm-74.1 255.3c4.1-2.7-2.5-11.9-42.8-9 37.1 15.8 42.8 9 42.8 9z"></path></svg><!-- <i class="fas fa-file-pdf"></i> Font Awesome fontawesome.com -->
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+
+              <!-- Supplementary PDF link -->
+              <!-- <span class="link-block">
+                  <a href="static/pdfs/supplementary_material.pdf" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Supplementary</span>
+                  </a>
+                </span> -->
+
+              <!-- Github link -->
+              <!-- <span class="link-block">
+                  <a href="https://github.com/YOUR REPO HERE" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span> -->
+
+              <!-- ArXiv abstract Link -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2412.05275" target="_blank" class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+  </section>
+
+<!-- Teaser -->
+<section class="section-light-gray-2">
+  <div class="container">
+    <h2 class="subtitle teaser-title">
+      Given an input prompt, DPP-GRPO enables generation of diverse sets of videos spanning cinematic factors such as 
+      camera motion or scene layout. We formulate diversity as set-level policy optimization with a DPP-based diminishing-returns term to 
+      suppress similar videos as the set grows.
+      We note that our results are uncurated and shown in the exact order produced by our method.
+    </h2>
+
+    <div class="teaser-carousel-wrapper">
+      <button class="teaser-nav teaser-nav-prev" aria-label="Previous teaser">❮</button>
+
+      <div class="teaser-carousel" id="teaser-carousel">
+        <!-- Card 1 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A boat gliding across a lake at twilight</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_boat_gliding_across_a_lake_at_twilight_1_8.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_boat_gliding_across_a_lake_at_twilight_0_953960134.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A boat gliding across a lake at twilight</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_boat_gliding_across_a_lake_at_twilight_2_3.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_boat_gliding_across_a_lake_at_twilight_1_2168055786.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A boat gliding across a lake at twilight</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_boat_gliding_across_a_lake_at_twilight_3_1.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_boat_gliding_across_a_lake_at_twilight_2_2404947554.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A boat gliding across a lake at twilight</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_boat_gliding_across_a_lake_at_twilight_4_10.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_boat_gliding_across_a_lake_at_twilight_3_804061572.mp4" type="video/mp4">
+          </video>
+        </div>
+        <!-- Card 5 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A cat eating food out of a bowl on sidewalk</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_cat_eating_food_out_of_a_bowl_on_sidewalk_0_2.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_cat_eating_food_out_of_a_bowl_on_sidewalk_1_2.mp4" type="video/mp4">
+          </video>
+        </div>
+      
+      <!-- Card 6 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A cat eating food out of a bowl on sidewalk</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_cat_eating_food_out_of_a_bowl_on_sidewalk_5_9.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_cat_eating_food_out_of_a_bowl_on_sidewalk_2_3.mp4" type="video/mp4">
+          </video>
+        </div>
+
+      <!-- Card 7 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A cat eating food out of a bowl on sidewalk</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_cat_eating_food_out_of_a_bowl_on_sidewalk_7_1.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_cat_eating_food_out_of_a_bowl_on_sidewalk_3_4.mp4" type="video/mp4">
+          </video>
+        </div>
+
+      <!-- Card 8 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A cat eating food out of a bowl on sidewalk</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_cat_eating_food_out_of_a_bowl_on_sidewalk_9_6.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_cat_eating_food_out_of_a_bowl_on_sidewalk_4_5.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A giraffe bending to sip water from a sunlit savana pool</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._0_5.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._1_0.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A giraffe bending to sip water from a sunlit savana pool</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._1_10.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._2_2.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 11 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A giraffe bending to sip water from a sunlit savana pool</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._2_3.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._2_2.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 12 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A giraffe bending to sip water from a sunlit savana pool</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._7_1.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_giraffe_bending_to_sip_water_from_a_sunlit_savannah_pool._3_3.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 13 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A water lily rests on a calm pond</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_water_lily_rests_on_a_calm_pond_0_1.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_water_lily_rests_on_a_calm_pond_0_1.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 14 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A water lily rests on a calm pond</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_water_lily_rests_on_a_calm_pond_1_1.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_water_lily_rests_on_a_calm_pond_1_2.mp4" type="video/mp4">
+          </video>
+        </div>
+        <!-- Card 15 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A water lily rests on a calm pond</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_water_lily_rests_on_a_calm_pond_2_2.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_water_lily_rests_on_a_calm_pond_2_3.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Card 15 -->
+        <div class="teaser-card">
+          <h3>Wan</h3>
+          <p class="prompt-text">A water lily rests on a calm pond</p>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/wan/A_water_lily_rests_on_a_calm_pond_3_3.mp4" type="video/mp4">
+          </video>
+
+          <h3>Ours</h3>
+          <video autoplay muted loop playsinline>
+            <source src="teaser/ours/A_water_lily_rests_on_a_calm_pond_3_4.mp4" type="video/mp4">
+          </video>
+        </div>
+
+
+
+      </div>
+
+      <button class="teaser-nav teaser-nav-next" aria-label="Next teaser">❯</button>
+    </div>
+  </div>
+</section>
+<!-- End Teaser -->
+
+
+
+  <!-- Paper abstract -->
+  <section class="section is-light section-light-gray-2">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              While recent text-to-video (T2V) diffusion models  have achieved impressive quality and prompt 
+              alignment, they often produce low-diversity outputs when sampling multiple videos from a single text
+               prompt. We tackle this challenge by formulating it as a set-level policy optimization problem, 
+               with the goal of training a policy that can cover the diverse range of plausible outcomes for a 
+               given prompt. To address this, we introduce DPP-GRPO, a novel   framework for diverse 
+               video generation that combines Determinantal Point Processes (DPPs) and Group Relative Policy 
+               Optimization (GRPO) theories to enforce explicit reward on diverse generations.  Our objective 
+               turns diversity into an explicit signal by imposing diminishing returns on redundant samples 
+               (via DPP) while supplies groupwise feedback over candidate sets (via GRPO). Our framework is 
+               plug-and-play and model-agnostic, and  encourages diverse generations across visual appearance,
+                 camera motions, and scene structure without sacrificing prompt fidelity or perceptual quality.
+                  We implement our method on WAN and CogVideoX, and show that our method consistently improves 
+                  video diversity on state-of-the-art benchmarks such as VBench, VideoScore, and human preference
+                   studies. Moreover, we release our code and a new benchmark dataset of 30,000 diverse prompts to 
+                   support future research.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- End paper abstract -->
+
+<section class="section section-light-gray-1">
+  <div class="container is-max-desktop">   <!-- added is-max-desktop -->
+    <div class="columns is-centered">
+      <div class="column has-text-centered">
+        <h2 class="title">Method Overview</h2>
+        <figure class="image framework-figure">
+          <img src="teaser/dpp.png" alt="Framework" class="framework-img">
+        </figure>
+        <p class="description">
+  The model generates a group of G candidates 
+  (C<sub>1</sub>, &hellip;, C<sub>G</sub>) for each prompt.
+  Each candidate is scored by a composite reward combining
+  DPP marginal gain &Delta;(S &cup; C<sub>i</sub>) and
+  relevance R<sub>rel</sub>(C<sub>i</sub>).
+  Groupwise normalization produces advantages A<sub>i</sub>,
+  which update the policy under the DPP-GRPO objective.
+
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Qualitative Comparisons -->
+<section class="section section-light-gray-2">
+  <div class="container">
+    <h2 class="title">Qualitative Results</h2>
+
+    <div class="grid-4">
+      <!-- put ALL your big qualitative columns here -->
+      <!-- (everything from <div class="column"> ... </div> that you pasted) -->
+      <!-- e.g. -->
+      <!--
+      <div class="column">
+        <div class="media-container">
+          <h3>Ours</h3>
+          <p class="prompt-text">A fantasy landscape</p>
+          <video controls autoplay muted loop>
+            <source src="qualitatives/ours/A_fantasy_landscape_1_1.mp4" type="video/mp4">
+          </video>
+        </div>
+        ...
+      </div>
+      -->
+      <div class="column">
+            <div class="media-container">
+                <h3>Ours</h3>
+                <p class="prompt-text">A fantasy landscape</p>
+                <video controls autoplay muted loop>
+                    <source src="qualitatives/ours/A_fantasy_landscape_1_1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="media-container">
+                <h3>Promptist</h3>
+                <video controls autoplay muted loop>
+                    <source src="qualitatives/promptist/A_fantasy_landscape_0_6.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+
+            <div class="media-container">
+                <h3>Prompt-A-Video</h3>
+                <video controls autoplay muted loop>
+                    <source src="qualitatives/prompt_a_video/a_fantasy_landscape_0_42.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="media-container">
+                <h3>Wan</h3>
+                <video controls autoplay muted loop>
+                    <source src="qualitatives/wan/A_fantasy_landscape_0_4.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            <div class="media-container">
+                <h3>CogVideo</h3>
+                <video controls autoplay muted loop>
+                    <source src="qualitatives/cogvideo/A_fantasy_landscape_1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A fantasy landscape</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_fantasy_landscape_2_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_fantasy_landscape_1_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_fantasy_landscape_1_42.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_fantasy_landscape_2_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_fantasy_landscape_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A fantasy landscape</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_fantasy_landscape_3_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_fantasy_landscape_2_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_fantasy_landscape_2_42.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_fantasy_landscape_4_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_fantasy_landscape_5.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A fantasy landscape</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_fantasy_landscape_4_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_fantasy_landscape_3_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_fantasy_landscape_6_42.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_fantasy_landscape_7_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_fantasy_landscape_9.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A coffee cup placed on a wooden table</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_coffee_cup_placed_on_a_wooden_table_0_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_coffee_cup_placed_on_a_wooden_table_1_9.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_coffee_cup_placed_on_a_wooden_table_2_58.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_coffee_cup_placed_on_a_wooden_table_6_10.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_coffee_cup_placed_on_a_wooden_table_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A coffee cup placed on a wooden table</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_coffee_cup_placed_on_a_wooden_table_1_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_coffee_cup_placed_on_a_wooden_table_1_10.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_coffee_cup_placed_on_a_wooden_table_4_58.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_coffee_cup_placed_on_a_wooden_table_9_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_coffee_cup_placed_on_a_wooden_table_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A coffee cup placed on a wooden table</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_coffee_cup_placed_on_a_wooden_table_2_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_coffee_cup_placed_on_a_wooden_table_2_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_coffee_cup_placed_on_a_wooden_table_8_58.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_coffee_cup_placed_on_a_wooden_table_16_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_coffee_cup_placed_on_a_wooden_table_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A coffee cup placed on a wooden table</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_coffee_cup_placed_on_a_wooden_table_4_4.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_coffee_cup_placed_on_a_wooden_table_3_6.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_coffee_cup_placed_on_a_wooden_table_9_58.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_coffee_cup_placed_on_a_wooden_table_18_6.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_coffee_cup_placed_on_a_wooden_table_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A person canoeing or kayaking</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_person_is_canoeing_or_kayaking_1_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_person_is_canoeing_or_kayaking_0_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_person_is_canoeing_or_kayaking_0_49.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_person_is_canoeing_or_kayaking_0_10.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_person_is_canoeing_or_kayaking_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A person canoeing or kayaking</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_person_is_canoeing_or_kayaking_2_9.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_person_is_canoeing_or_kayaking_0_7.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_person_is_canoeing_or_kayaking_1_49.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_person_is_canoeing_or_kayaking_2_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_person_is_canoeing_or_kayaking_1.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A person canoeing or kayaking</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_person_is_canoeing_or_kayaking_3_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_person_is_canoeing_or_kayaking_1_10.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_person_is_canoeing_or_kayaking_2_49.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_person_is_canoeing_or_kayaking_3_7.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_person_is_canoeing_or_kayaking_2.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <p class="prompt-text">A person canoeing or kayaking</p>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/ours/A_person_is_canoeing_or_kayaking_4_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Promptist</h3>
+                    
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/promptist/A_person_is_canoeing_or_kayaking_12_5.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Prompt-A-Video</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/prompt_a_video/a_person_is_canoeing_or_kayaking_5_49.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/wan/A_person_is_canoeing_or_kayaking_5_0.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <video controls autoplay muted loop>
+                        <source src="qualitatives/cogvideo/A_person_is_canoeing_or_kayaking_3.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+
+            </div>
+    </div>
+
+    <h2 class="title" style="margin-top: 3rem;">Ablation</h2>
+    <div class="grid-ablation">
+
+      <div class="column">
+                <div class="media-container">
+                    <h3>VEO</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/veo/A_dog_playing_202511121251_wjcq6.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>VEO + Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/veo/In_a_sunset_202511121257_d541n.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <!-- Column 2 -->
+            <div class="column">
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/wan/A_dog_playing_ball_on_beach_1_10.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan + Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/wan/A_dog_playing_with_ball_on_beach_4_17.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+            <!-- Column 3 -->
+            <div class="column">
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/cogvideo/A_dog_playing_ball_on_beach_4.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/cogvideo/A_dog_playing_with_ball_on_beach_1_1999279616.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>VEO</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/veo/A_dog_playing_202511121251_df839.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>VEO + Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/veo/A_cinematic_colorgraded_202511121258_vw4tf.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>Wan</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/wan/A_dog_playing_ball_on_beach_3_2.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>Wan + Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/wan/A_dog_playing_with_ball_on_beach_3._7.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+
+            <div class="column">
+                <div class="media-container">
+                    <h3>CogVideo</h3>
+                    <p class="prompt-text">A dog playing ball on beach</p>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/cogvideo/A_dog_playing_ball_on_beach_2.mp4" type="video/mp4">
+                    </video>
+                </div>
+
+                <div class="media-container">
+                    <h3>CogVideo + Ours</h3>
+                    <video controls autoplay muted loop>
+                        <source src="ablation/cogvideo/A_dog_playing_ball_on_beach_15.mp4" type="video/mp4">
+                    </video>
+                </div>
+            </div>
+
+
+    </div>
+  </div>
+</section>
+
+
+
+<section class="section section-light-gray-1">
+  <div class="container is-max-widescreen">
+    <h2 class="title has-text-centered">Quantitative Results</h2>
+
+    <figure class="large-figure">
+      <img src="qualitatives/quantitative.png" alt="Quantitative Table">
+    </figure>
+
+    <!-- <p class="description has-text-centered">
+      Quantitative comparison of our framework with baseline T2V models under two model families (Wan2.1 and CogVideoX).
+    </p> -->
+  </div>
+</section>
+
+
+
+
+
+
+  <!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>
+@article{kazimi2025dppgrpo,
+        title={Diverse Video Generation with Determinantal Point Process-Guided Policy Optimization},
+        author={Kazimi, Tahira and Dulop, Connor and Yanardag, Pinar},
+        journal={arXiv preprint arXiv:},
+        year={2025}
+}
+      </code></pre>
+    </div>
+  </section>
+  <!--End BibTex citation -->
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8 is-four-fifths">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the&nbsp;<a href="https://nerfies.github.io/" target="_blank">Nerfies</a>&nbsp;project page.
+              You are free to borrow the source code of this website, we just ask that you link back to this page in the
+              footer. <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Statcounter tracking code -->
+  <script src="./MotionFlow_files/tracker.js"></script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('.teaser-carousel-wrapper').forEach(function (wrapper) {
+    const carousel = wrapper.querySelector('.teaser-carousel');
+    const prevBtn  = wrapper.querySelector('.teaser-nav-prev');
+    const nextBtn  = wrapper.querySelector('.teaser-nav-next');
+    const firstCard = wrapper.querySelector('.teaser-card');
+
+    if (!carousel || !firstCard || !prevBtn || !nextBtn) return;
+
+    function getScrollAmount() {
+      return firstCard.offsetWidth + 24; // 24px = gap
+    }
+
+    function scrollByCard(direction) {
+      carousel.scrollBy({
+        left: direction * getScrollAmount(),
+        behavior: 'smooth'
+      });
+    }
+
+    prevBtn.addEventListener('click', function () {
+      scrollByCard(-1);
+    });
+
+    nextBtn.addEventListener('click', function () {
+      scrollByCard(1);
+    });
+  });
+});
+</script>
+
+  <!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+
+  <!-- End of Statcounter Code -->
+
+
+</body></html>
